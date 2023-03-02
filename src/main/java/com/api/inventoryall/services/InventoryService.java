@@ -11,9 +11,14 @@ import javax.transaction.Transactional;
 public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
-
     @Transactional
     public InventoryModel save(InventoryModel inventoryModel) {
         return inventoryRepository.save(inventoryModel);
+    }
+    public boolean existsByQrcode(String qrcode) {
+        return inventoryRepository.existsByQrcode(qrcode);
+    }
+    public boolean existsByClientAndQrCode(String nomeCliente, String qrcode) {
+        return inventoryRepository.existsByNomeClienteAndQrcode(nomeCliente, qrcode);
     }
 }

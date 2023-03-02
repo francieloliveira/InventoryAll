@@ -10,12 +10,11 @@ import java.util.UUID;
 @Table(name = "TB_ITEM_INVENTORY")
 public class InventoryModel implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column(nullable = false, unique = true, length = 10)
-    private String nomeEquioamento;
+    private String nomeEquipamento;
     @Column(nullable = false, unique = true, length = 255)
     private String numeroSerie;
     @Column(nullable = false)
@@ -38,6 +37,11 @@ public class InventoryModel implements Serializable {
     private String anydesk;
     @Column(nullable = false, length = 70)
     private String email;
+    @Column(nullable = false, unique = true, length = 40)
+    private String nomeCliente;
+    @Column(nullable = false, unique = true, length = 255)
+    private String qrcode;
+
 
     public UUID getId() {
         return id;
@@ -47,12 +51,12 @@ public class InventoryModel implements Serializable {
         this.id = id;
     }
 
-    public String getNomeEquioamento() {
-        return nomeEquioamento;
+    public String getNomeEquipamento() {
+        return nomeEquipamento;
     }
 
-    public void setNomeEquioamento(String nomeEquioamento) {
-        this.nomeEquioamento = nomeEquioamento;
+    public void setNomeEquipamento(String nomeEquioamento) {
+        this.nomeEquipamento = nomeEquioamento;
     }
 
     public String getNumeroSerie() {
@@ -141,5 +145,21 @@ public class InventoryModel implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 }

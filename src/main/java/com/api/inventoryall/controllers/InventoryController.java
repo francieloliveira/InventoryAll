@@ -25,6 +25,12 @@ public class InventoryController {
 
     @PostMapping
     public ResponseEntity<Object> saveInventory(@RequestBody @Valid InventoryDto inventoryDto){
+        if(inventoryService.existsByQrcode(inventoryDto.getQrcode())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: O QRCODE já existe");
+        }
+        if(inventoryService.existsByClientAndQrCode(inventoryDto.getNomeCliente(),inventoryDto.getQrcode())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Já existe este QRCODE para este cliente");
+        }
         var inventoryModel = new InventoryModel();
         BeanUtils.copyProperties(inventoryDto,inventoryModel);
         inventoryModel.setRegstrationDAte(LocalDateTime.now(ZoneId.of("UTC")));

@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<InventoryModel, UUID> {
+    boolean existsByQrcode (String qrcode);
+
+    boolean existsByNomeClienteAndQrcode (String nomeCliente, String qrcode);
 }
