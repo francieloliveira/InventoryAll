@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 public class InventoryDto {
     @NotBlank
     private String nomeEquipamento;
-    @NotBlank
     private String numeroSerie;
     private String processador;
     private String memoria;

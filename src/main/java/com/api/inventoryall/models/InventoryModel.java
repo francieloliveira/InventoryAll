@@ -13,9 +13,9 @@ public class InventoryModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, length = 10)
     private String nomeEquipamento;
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, length = 255)
     private String numeroSerie;
     @Column(nullable = false)
     private LocalDateTime dataCadastro;
