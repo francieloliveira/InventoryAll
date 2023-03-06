@@ -20,17 +20,23 @@ public class InventoryService {
     public InventoryModel save(InventoryModel inventoryModel) {
         return inventoryRepository.save(inventoryModel);
     }
+
     public boolean existsByQrcode(String qrcode) {
         return inventoryRepository.existsByQrcode(qrcode);
     }
+
     public boolean existsByNomeClientAndQrcode(String nomeCliente, String qrcode) {
         return inventoryRepository.existsByNomeClienteAndQrcode(nomeCliente, qrcode);
     }
+
     public Page<InventoryModel> findAll(Pageable pageable) { return inventoryRepository.findAll(pageable); }
+
     public Optional<InventoryModel> findById(UUID id) {
         return inventoryRepository.findById(id);
     }
 
     @Transactional
     public void deleteItem(InventoryModel inventoryModel) { inventoryRepository.delete(inventoryModel);}
+
+
 }

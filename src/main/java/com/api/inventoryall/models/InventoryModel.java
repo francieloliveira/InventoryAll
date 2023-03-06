@@ -13,7 +13,7 @@ public class InventoryModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 100)
     private String nomeEquipamento;
     @Column(nullable = false, length = 255)
     private String numeroSerie;
@@ -42,7 +42,6 @@ public class InventoryModel implements Serializable {
     @Column(nullable = false, unique = true, length = 255)
     private String qrcode;
 
-
     public UUID getId() {
         return id;
     }
@@ -55,8 +54,8 @@ public class InventoryModel implements Serializable {
         return nomeEquipamento;
     }
 
-    public void setNomeEquipamento(String nomeEquioamento) {
-        this.nomeEquipamento = nomeEquioamento;
+    public void setNomeEquipamento(String nomeEquipamento) {
+        this.nomeEquipamento = nomeEquipamento;
     }
 
     public String getNumeroSerie() {
@@ -71,7 +70,7 @@ public class InventoryModel implements Serializable {
         return dataCadastro;
     }
 
-    public void setRegstrationDAte(LocalDateTime dataCadastro) {
+    public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 

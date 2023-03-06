@@ -3,7 +3,6 @@ package com.api.inventoryall.controllers;
 import com.api.inventoryall.dtos.InventoryDto;
 import com.api.inventoryall.models.InventoryModel;
 import com.api.inventoryall.services.InventoryService;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,7 @@ public class InventoryController {
     }
 
     /**
-     *  Este método Salva um item de inventário no BD.
+     *  Este método Salva um item no inventário.
       * @param inventoryDto
      * @return ResponseEntity
      */
@@ -45,7 +44,7 @@ public class InventoryController {
         }
         var inventoryModel = new InventoryModel();
         BeanUtils.copyProperties(inventoryDto,inventoryModel);
-        inventoryModel.setRegstrationDAte(LocalDateTime.now(ZoneId.of("UTC")));
+        inventoryModel.setDataCadastro(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(HttpStatus.CREATED).body(inventoryService.save(inventoryModel));
     }
 
@@ -88,5 +87,22 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body("Item excluido!");
     }
 
-//TODO Método update
+    /**
+     * Atualiza, se existir, um intem do inventário.
+     * @param id
+     * @param inventoryDto
+     * @return ResponseEntity
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateItem(@PathVariable(value = "id") UUID id, @RequestBody @Valid InventoryDto inventoryDto) {
+        Optional<InventoryModel> inventoryModelOptional = inventoryService.findById(id);
+        if (!inventoryModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não existe.");
+        }
+        var inventoryModel = inventoryModelOptional.get();
+        BeanUtils.copyProperties(inventoryDto,inventoryModel);
+        inventoryModel.setId(inventoryModelOptional.get().getId());
+        inventoryModel.setDataCadastro(inventoryModelOptional.get().getDataCadastro());
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.save(inventoryModel));
+    }
 }
