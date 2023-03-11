@@ -1,14 +1,13 @@
 package com.api.inventoryall.models;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TB_ITEM_INVENTORY")
-public class InventoryModel implements Serializable {
+public class ItemModel implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,10 +36,12 @@ public class InventoryModel implements Serializable {
     private String anydesk;
     @Column(nullable = false, length = 70)
     private String email;
-    @Column(nullable = false, unique = true, length = 40)
-    private String nomeCliente;
     @Column(nullable = false, unique = true, length = 255)
     private String qrcode;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private ClientModel clientModel;
 
     public UUID getId() {
         return id;
@@ -146,19 +147,19 @@ public class InventoryModel implements Serializable {
         this.email = email;
     }
 
-    public String getNomeCliente() {
-        return nomeCliente;
-    }
-
-    public void setNomeCliente(String nomeCliente) {
-        this.nomeCliente = nomeCliente;
-    }
-
     public String getQrcode() {
         return qrcode;
     }
 
     public void setQrcode(String qrcode) {
         this.qrcode = qrcode;
+    }
+
+    public ClientModel getClientModel() {
+        return clientModel;
+    }
+
+    public void setClientModel(ClientModel clientModel) {
+        this.clientModel = clientModel;
     }
 }
