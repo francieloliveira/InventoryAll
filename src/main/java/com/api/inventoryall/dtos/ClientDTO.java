@@ -3,7 +3,7 @@ package com.api.inventoryall.dtos;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-public class ClientDto {
+public class ClientDTO {
     @NotBlank
     private String name;
     @NotBlank
@@ -20,8 +20,10 @@ public class ClientDto {
     private String status;
     @NotBlank
     private String password;
-    @NotBlank
-    private String confirmPassword;
+
+
+    public ClientDTO() {
+    }
 
     public String getName() {
         return name;
@@ -111,11 +113,4 @@ public class ClientDto {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
 }

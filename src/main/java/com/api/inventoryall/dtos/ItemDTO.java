@@ -1,54 +1,22 @@
-package com.api.inventoryall.models;
+package com.api.inventoryall.dtos;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.UUID;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "TB_ITEM_INVENTORY")
-public class ItemModel implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    @Column(nullable = false, length = 100)
+public class ItemDTO {
+    @NotBlank
     private String nomeEquipamento;
-    @Column(nullable = false, length = 255)
     private String numeroSerie;
-    @Column(nullable = false)
-    private LocalDateTime dataCadastro;
-    @Column(nullable = true, length = 40)
     private String processador;
-    @Column(nullable = true, length = 20)
     private String memoria;
-    @Column(nullable = true, length = 20)
     private String armazenamento;
-    @Column(nullable = true, length = 255)
     private String historico;
-    @Column(nullable = true, length = 50)
     private String tecnico;
-    @Column(nullable = true, length = 255)
     private String reclamacaoCliente;
-    @Column(nullable = true, length = 20)
     private String ativarChamado;
-    @Column(nullable = true, length = 20)
-    private String anydesk;
-    @Column(nullable = false, length = 70)
-    private String email;
-    @Column(nullable = false, unique = true, length = 255)
+    @NotBlank
     private String qrcode;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private ClientModel clientModel;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+    public ItemDTO() {
     }
 
     public String getNomeEquipamento() {
@@ -65,14 +33,6 @@ public class ItemModel implements Serializable {
 
     public void setNumeroSerie(String numeroSerie) {
         this.numeroSerie = numeroSerie;
-    }
-
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
     }
 
     public String getProcessador() {
@@ -131,35 +91,11 @@ public class ItemModel implements Serializable {
         this.ativarChamado = ativarChamado;
     }
 
-    public String getAnydesk() {
-        return anydesk;
-    }
-
-    public void setAnydesk(String anydesk) {
-        this.anydesk = anydesk;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getQrcode() {
         return qrcode;
     }
 
     public void setQrcode(String qrcode) {
         this.qrcode = qrcode;
-    }
-
-    public ClientModel getClientModel() {
-        return clientModel;
-    }
-
-    public void setClientModel(ClientModel clientModel) {
-        this.clientModel = clientModel;
     }
 }

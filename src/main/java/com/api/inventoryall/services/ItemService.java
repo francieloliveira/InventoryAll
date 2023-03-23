@@ -1,6 +1,6 @@
 package com.api.inventoryall.services;
 
-import com.api.inventoryall.models.ItemModel;
+import com.api.inventoryall.model.Item;
 import com.api.inventoryall.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,19 +20,23 @@ public class ItemService {
         return itemRepository.existsByQrcode(qrcode);
     }
 
-    public Page<ItemModel> findAll(Pageable pageable) { return itemRepository.findAll(pageable); }
+    public Page<Item> findAll(Pageable pageable) {
+        return itemRepository.findAll(pageable);
+    }
 
-    public Optional<ItemModel> findById(UUID id) {
+    public Optional<Item> findById(UUID id) {
         return itemRepository.findById(id);
     }
 
     @Transactional
-    public ItemModel save(ItemModel itemModel) {
-        return itemRepository.save(itemModel);
+    public Item save(Item item) {
+        return itemRepository.save(item);
     }
 
     @Transactional
-    public void deleteItem(ItemModel itemModel) { itemRepository.delete(itemModel);}
+    public void deleteItem(Item item) {
+        itemRepository.delete(item);
+    }
 
 
 }

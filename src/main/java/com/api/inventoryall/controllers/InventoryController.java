@@ -1,8 +1,9 @@
 package com.api.inventoryall.controllers;
 
-import com.api.inventoryall.dtos.ItemDto;
-import com.api.inventoryall.models.ClientModel;
-import com.api.inventoryall.models.ItemModel;
+import com.api.inventoryall.dtos.ClientDTO;
+import com.api.inventoryall.dtos.ItemDTO;
+import com.api.inventoryall.model.Client;
+import com.api.inventoryall.model.Item;
 import com.api.inventoryall.services.ClientService;
 import com.api.inventoryall.services.ItemService;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/inv-all/")
+@RequestMapping("/inventory")
 public class InventoryController {
 
     @Autowired
@@ -36,29 +37,9 @@ public class InventoryController {
      * @param pageable
      * @return ResponseEntity
      */
-    @GetMapping("/inventory")
-    public ResponseEntity<Page<ItemModel>> getAllItems(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+    @GetMapping("/all-items")
+    public ResponseEntity<Page<Item>> getAllItems(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(itemService.findAll(pageable));
-    }
-
-    /**
-     *  Este método Salva um item no inventário.
-      * @param itemDto
-     * @return ResponseEntity
-     */
-    @PostMapping("/item")
-    public ResponseEntity<Object> saveItem(@RequestBody @Valid ItemDto itemDto){
-        if(itemService.existsByQrcode(itemDto.getQrcode())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: O QRCODE já existe");
-        }
-
-//        if(itemService.existsByNomeClientAndQrcode(itemDto.getQrcode(), itemDto.getQrcode())){
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Já existe este QRCODE para este cliente");
-//        }
-        var inventoryModel = new ItemModel();
-        BeanUtils.copyProperties(itemDto,inventoryModel);
-        inventoryModel.setDataCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(inventoryModel));
     }
 
     /**
@@ -68,7 +49,7 @@ public class InventoryController {
      */
     @GetMapping("/item/{id}")
     public ResponseEntity<Object> getItemById(@PathVariable(value = "id") UUID id){
-        Optional<ItemModel> inventoryModelOptional = itemService.findById(id);
+        Optional<Item> inventoryModelOptional = itemService.findById(id);
         if (!inventoryModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não existe!");
         }
@@ -76,18 +57,19 @@ public class InventoryController {
     }
 
     /**
-     * Deleta, se existir, um item do inventário.
-     * @param id
+     *  Este método Salva um item no inventário.
+      * @param itemDto
      * @return ResponseEntity
      */
-    @DeleteMapping("/item/{id}")
-    public ResponseEntity<Object> deleteItem(@PathVariable(value = "id") UUID id){
-        Optional<ItemModel> inventoryModelOptional = itemService.findById(id);
-        if (!inventoryModelOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não existe.");
+    @PostMapping("/save-item")
+    public ResponseEntity<Object> saveItem(@RequestBody @Valid ItemDTO itemDto){
+        if(itemService.existsByQrcode(itemDto.getQrcode())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: O QRCODE já existe");
         }
-        itemService.deleteItem(inventoryModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Item excluido!");
+        var itemModel = new Item();
+        BeanUtils.copyProperties(itemDto,itemModel);
+        itemModel.setDataCadastro(LocalDateTime.now(ZoneId.of("UTC")));
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(itemModel));
     }
 
     /**
@@ -96,9 +78,9 @@ public class InventoryController {
      * @param itemDto
      * @return ResponseEntity
      */
-    @PutMapping("/item/{id}")
-    public ResponseEntity<Object> updateItem(@PathVariable(value = "id") UUID id, @RequestBody @Valid ItemDto itemDto) {
-        Optional<ItemModel> inventoryModelOptional = itemService.findById(id);
+    @PutMapping("/update-item/{id}")
+    public ResponseEntity<Object> updateItem(@PathVariable(value = "id") UUID id, @RequestBody @Valid ItemDTO itemDto) {
+        Optional<Item> inventoryModelOptional = itemService.findById(id);
         if (!inventoryModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não existe.");
         }
@@ -109,10 +91,96 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body(itemService.save(inventoryModel));
     }
 
+    /**
+     * Deleta, se existir, um item do inventário.
+     * @param id
+     * @return ResponseEntity
+     */
+    @DeleteMapping("/del-item/{id}")
+    public ResponseEntity<Object> deleteItem(@PathVariable(value = "id") UUID id){
+        Optional<Item> itemOptional = itemService.findById(id);
+        if (!itemOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não existe.");
+        }
+        itemService.deleteItem(itemOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Item excluido!");
+    }
 
-    @GetMapping("/clients")
-    public ResponseEntity<Page<ClientModel>> getAllClients(@PageableDefault(page = 0, size = 10, sort = "client_id", direction = Sort.Direction.ASC) Pageable pageable){
+
+
+    /**
+     * Recupera tdos os clientes do inventário.
+     * @param pageable
+     * @return ResponseEntity
+     */
+    @GetMapping("/all-clients")
+    public ResponseEntity<Page<Client>> getAllClients(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(clientService.findAll(pageable));
     }
+
+    /**
+     * Recupera um único cliente do inventário.
+     * @param id
+     * @return ResponseEntity
+     */
+    @GetMapping("/client/{id}")
+    public ResponseEntity<Object> getClientById(@PathVariable(value = "id") UUID id){
+        Optional<Client> clientOptional = clientService.findById(id);
+        if (!clientOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client não existe!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(clientOptional.get());
+    }
+
+    /**
+     * Salva um client no BD
+     * @param clientDTO
+     * @return
+     */
+    @PostMapping("/save-client")
+    public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDTO clientDTO){
+        if(clientService.existsByEmail(clientDTO.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: O email já existe");
+        }
+        var clientModel = new Client();
+        BeanUtils.copyProperties(clientDTO,clientModel);
+        clientModel.setDataCadastro(LocalDateTime.now(ZoneId.of("UTC")));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
+    }
+
+    /**
+     * Atualiza, se existir, um cliente.
+     * @param id
+     * @param clientDto
+     * @return ResponseEntity
+     */
+    @PutMapping("/update-client/{id}")
+    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") UUID id, @RequestBody @Valid ClientDTO clientDto) {
+        Optional<Client> clientOptional = clientService.findById(id);
+        if (!clientOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client não existe.");
+        }
+        var clientModel = clientOptional.get();
+        BeanUtils.copyProperties(clientDto,clientModel);
+        clientModel.setId(clientOptional.get().getId());
+        clientModel.setDataCadastro(clientOptional.get().getDataCadastro());
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
+    }
+
+    /**
+     * Deleta, se existir, um client do BD.
+     * @param id
+     * @return ResponseEntity
+     */
+    @DeleteMapping("/del-client/{id}")
+    public ResponseEntity<Object> deleteClient(@PathVariable(value = "id") UUID id){
+        Optional<Client> clientOptional = clientService.findById(id);
+        if (!clientOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não existe.");
+        }
+        clientService.deleteClient(clientOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Client excluido!");
+    }
+
 
 }
